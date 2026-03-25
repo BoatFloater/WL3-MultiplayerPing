@@ -14,6 +14,7 @@ public class PingManager : MonoBehaviour
             {
                 GameObject pingManagerObject = new GameObject(nameof(PingManager));
                 _instance = pingManagerObject.AddComponent<PingManager>();
+                _instance.pingAudioEventId = MultiplayerPingPlugin.PingAudioEventId;
                 DontDestroyOnLoad(pingManagerObject);
             }
 
@@ -22,6 +23,7 @@ public class PingManager : MonoBehaviour
     }
 
     private GameObject pingDisplay;
+    private uint pingAudioEventId = MultiplayerPingPlugin.DefaultPingEventId;
 
     public void PingAt(Vector3 position, Color color = default)
     {
@@ -36,8 +38,7 @@ public class PingManager : MonoBehaviour
         pingDisplay.transform.position = position;
         pingDisplay.SetActive(true);
 
-        // todo: find better ping event ID
-        AkSoundEngine.PostEvent(65575612, pingDisplay);
+        AkSoundEngine.PostEvent(pingAudioEventId, pingDisplay);
     }
 
     private bool ensurePingObject()

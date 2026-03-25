@@ -14,13 +14,17 @@ namespace MultiplayerPing;
 public class MultiplayerPingPlugin : BasePlugin
 {
     internal const short PingMessageType = 32255;
+    internal const uint DefaultPingEventId = 3347507414u;
 
     internal static new ManualLogSource Log;
 
     private static ConfigEntry<string> cfgPingColor;
     private static ConfigEntry<string> cfgPingKeyCodeStr;
+    private static ConfigEntry<uint> cfgPingAudioEventId;
 
     private static KeyCode resultKeyCode;
+
+    public static uint PingAudioEventId => cfgPingAudioEventId.Value;
 
     public override void Load()
     {
@@ -30,8 +34,11 @@ public class MultiplayerPingPlugin : BasePlugin
         ClassInjector.RegisterTypeInIl2Cpp<PingManager>();
         ClassInjector.RegisterTypeInIl2Cpp<PingMessage>();
 
-        cfgPingColor = Config.Bind("General", "PingColor", "#00ff00", "Color of the ping indicator.");
-        cfgPingKeyCodeStr = Config.Bind("General", "PingKeyCodeStr", nameof(KeyCode.Mouse2), "Key code modifier for pinging.");
+        cfgPingColor = Config.Bind("General", "PingColor", "#00ff00", "Color of your ping indicator.");
+        cfgPingKeyCodeStr = Config.Bind("General", "PingKeyCodeStr", nameof(KeyCode.Mouse2),
+            "Key code modifier for pinging.");
+        cfgPingAudioEventId = Config.Bind("General", "PingAudioEventId", DefaultPingEventId,
+            "Audio event ID for the ping sound. (This is a local configuration)");
 
         resultKeyCode = Enum.TryParse(cfgPingKeyCodeStr.Value, out resultKeyCode) ? resultKeyCode : KeyCode.Mouse2;
 
